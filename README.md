@@ -625,4 +625,144 @@ Quando o changeset for inválido, devemos retornar o próprio changeset, então,
   defp put_password_hash(changeset), do: changeset
 ```
 
+## Inserindo o User no banco
+
+O [`Ecto.Repo`](https://hexdocs.pm/ecto/Ecto.Repo.html) define um repositório e mapeia os dados que temos no elixir e o nosso repositório físico que é o nosso banco de dados. O Adapter implementa os callbacks. Vamos testar no `iex`
+
+```elixir
+iex> alias Rockelivery.Repo
+Rockelivery.Repo
+
+iex> user_params = %{address: "Rua das bananeiras", age: 23, cep: "12345678", cpf: "12345678901", email: "romulo@banana.com", name: "Rômulo", password: "123456"}
+%{
+  address: "Rua das bananeiras",
+  age: 23,
+  cep: "12345678",
+  cpf: "12345678901",
+  email: "romulo@banana.com",
+  name: "Rômulo",
+  password: "123456"
+}
+
+iex> alias Rockelivery.User
+Rockelivery.User
+
+iex> user_params |> User.changeset() |> Repo.insert()
+[debug] QUERY OK db=2.7ms decode=3.5ms queue=0.6ms idle=1305.6ms                INSERT INTO "users" ("address","age","cep","cpf","email","name","password_hash","inserted_at","updated_at","id") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ["Rua das bananeiras", 18, "10312312", "12345678901", "romulo@banana.com", "Rômulo", "$pbkdf2-sha512$160000$qt8jzGS2orQAiLfEWoTp1w$z8t.CcdcoJZJuuxNrbtkpociDwsie3k6VsGk4VJ6nDfwB6lvwq98b/5Tj9.S4/TJHq./a08R7luUBN.nccb4fA", ~N[2021-11-25 18:10:34], ~N[2021-11-25 18:10:34], <<203, 63, 176, 130, 228, 201, 75, 221, 175, 124, 180, 43, 92, 89, 55, 152>>]
+{:ok,
+ %Rockelivery.User{
+   __meta__: #Ecto.Schema.Metadata<:loaded, "users">,
+   address: "Rua das bananeiras",
+   age: 18,
+   cep: "10312312",
+   cpf: "12345678901",
+   email: "romulo@banana.com",
+   id: "cb3fb082-e4c9-4bdd-af7c-b42b5c593798",
+   inserted_at: ~N[2021-11-25 18:10:34],
+   name: "Rômulo",
+   password: "123456",
+   password_hash: "$pbkdf2-sha512$160000$qt8jzGS2orQAiLfEWoTp1w$z8t.CcdcoJZJuuxNrbtkpociDwsie3k6VsGk4VJ6nDfwB6lvwq98b/5Tj9.S4/TJHq./a08R7luUBN.nccb4fA",
+   updated_at: ~N[2021-11-25 18:10:34]
+ }}
+```
+
+E vemos se foi salvo no banco
+
+```elixir
+iex> Repo.all(User)
+[debug] QUERY OK source="users" db=0.6ms queue=0.6ms idle=314.4ms
+SELECT u0."id", u0."age", u0."address", u0."cep", u0."cpf", u0."email", u0."password_hash", u0."name", u0."inserted_at", u0."updated_at" FROM "users" AS u0 []
+[
+  %Rockelivery.User{
+    __meta__: #Ecto.Schema.Metadata<:loaded, "users">,
+    address: "Rua das bananeiras",
+    age: 18,
+    cep: "10312312",
+    cpf: "12345678901",
+    email: "romulo@banana.com",
+    id: "cb3fb082-e4c9-4bdd-af7c-b42b5c593798",
+    inserted_at: ~N[2021-11-25 18:10:34],
+    name: "Rômulo",
+    password: nil,
+    password_hash: "$pbkdf2-sha512$160000$qt8jzGS2orQAiLfEWoTp1w$z8t.CcdcoJZJuuxNrbtkpociDwsie3k6VsGk4VJ6nDfwB6lvwq98b/5Tj9.S4/TJHq./a08R7luUBN.nccb4fA",
+    updated_at: ~N[2021-11-25 18:10:34]
+  }
+]
+```
+
+Ou pelo get
+
+```elixir
+iex> Repo.get(User, "c08a9d34-fab8-4a0e-99e1-63f94b26e2f4")
+[debug] QUERY OK source="users" db=0.5ms queue=0.5ms idle=1896.1ms
+SELECT u0."id", u0."age", u0."address", u0."cep", u0."cpf", u0."email", u0."password_hash", u0."name", u0."inserted_at", u0."updated_at" FROM "users" AS u0 WHERE (u0."id" = $1) [<<203, 63, 176, 130, 228, 201, 75, 221, 175, 124, 180, 43, 92, 89, 55, 152>>]
+%Rockelivery.User{
+  __meta__: #Ecto.Schema.Metadata<:loaded, "users">,
+  address: "Rua das bananeiras",
+  age: 18,
+  cep: "10312312",
+  cpf: "12345678901",
+  email: "romulo@banana.com",
+  id: "cb3fb082-e4c9-4bdd-af7c-b42b5c593798",
+  inserted_at: ~N[2021-11-25 18:10:34],
+  name: "Rômulo",
+  password: nil,
+  password_hash: "$pbkdf2-sha512$160000$qt8jzGS2orQAiLfEWoTp1w$z8t.CcdcoJZJuuxNrbtkpociDwsie3k6VsGk4VJ6nDfwB6lvwq98b/5Tj9.S4/TJHq./a08R7luUBN.nccb4fA",
+  updated_at: ~N[2021-11-25 18:10:34]
+}
+```
+
+Vamos criar um módulo auxiliar para criação de usuários no banco de dados. Criamos o arquivo `users/create.ex`
+
+```elixir
+defmodule Rockelivery.Users.Create do
+  alias Rockelivery.{Repo, User}
+
+  def call(params) do
+    params
+    |> User.changeset()
+    |> Repo.insert()
+  end
+end
+```
+
+E vamos ver no `iex`
+
+```elixir
+iex> alias Rockelivery.Users.Create
+Rockelivery.Users.Create
+
+ex> user_params = %{age: 18, address: "Rua das Banana", cep: "10312312", cpf: "12345678902", email: "romulo2@banana.com", password: "123456", name: "Rômulo"}
+%{
+  address: "Rua das bananeiras",
+  age: 18,
+  cep: "10312312",
+  cpf: "12345678902",
+  email: "romulo2@banana.com",
+  name: "Rômulo",
+  password: "123456"
+}
+
+iex> Create.call(user_params)
+[debug] QUERY OK db=2.7ms idle=1276.0ms
+INSERT INTO "users" ("address","age","cep","cpf","email","name","password_hash","inserted_at","updated_at","id") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ["Rua das bananeiras", 18, "10312312", "12345678902", "romulo2@banana.com", "Rômulo", "$pbkdf2-sha512$160000$bojdUAufcU0EsKuCkZsKHw$OR1NioEV56.NKGpC9zxSY1B.F2U53jsCZjP.laoz04tCoOzN//j4LE9p4QU5t7AJhQS8mLPDO9Hi342WXKGeGA", ~N[2021-11-25 18:14:16], ~N[2021-11-25 18:14:16], <<184, 20, 160, 243, 182, 162, 76, 86, 140, 35, 63, 94, 118, 254, 119, 209>>]
+{:ok,
+ %Rockelivery.User{
+   __meta__: #Ecto.Schema.Metadata<:loaded, "users">,
+   address: "Rua das bananeiras",
+   age: 18,
+   cep: "10312312",
+   cpf: "12345678902",
+   email: "romulo2@banana.com",
+   id: "b814a0f3-b6a2-4c56-8c23-3f5e76fe77d1",
+   inserted_at: ~N[2021-11-25 18:14:16],
+   name: "Rômulo",
+   password: "123456",
+   password_hash: "$pbkdf2-sha512$160000$bojdUAufcU0EsKuCkZsKHw$OR1NioEV56.NKGpC9zxSY1B.F2U53jsCZjP.laoz04tCoOzN//j4LE9p4QU5t7AJhQS8mLPDO9Hi342WXKGeGA",
+   updated_at: ~N[2021-11-25 18:14:16]
+ }}
+```
+
+E vemos pelo `Repo.all(User)`
+
 ---

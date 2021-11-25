@@ -278,4 +278,96 @@ $ mix ecto.migrate
 23:42:29.354 [info]  Migrations already up
 ```
 
----
+## Criando o schema do User pt 1
+
+A diferença principal de uma migration para um schema é que a migration modela o modelo de dados, ou seja, modelo como os dados são salvos no banco de dados, como é a tabela e quais as colunas dela. O schema é uma representação desse modelo num código que o elixir pode entender. O schema vai devolver uma struct para representar esses dados, com validações e com cast de dados.
+
+Em `rockelivery` vamos criar um novo arquivo `user.ex`. Todos arquivos que representam um schema, criamos o schema na raiz dessa pasta e uma pasta com o nome do contexto no plural contendo todas as ações e lógicas ao redor do usuário fica dentro dessa pasta `users`.
+
+De novo, temos que definir que `id` é do tipo `:binary_id`
+
+```elixir
+defmodule Rockelivery.User do
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  @primary_key {:id, :binary_id, autogenerate: true}
+
+  schema "users" do
+    field :address, :string
+    field :age, :integer
+    field :cep, :string
+    field :cpf, :string
+    field :email, :string
+    field :name, :string
+    field :password_hash, :string
+
+    timestamps()
+  end
+end
+```
+
+E no `iex` podemos definir um schema que retorna a struct
+
+```elixir
+iex> %Rockelivery.User{}
+%Rockelivery.User{
+  __meta__: #Ecto.Schema.Metadata<:built, "users">,
+  address: nil,
+  age: nil,
+  cep: nil,
+  cpf: nil,
+  email: nil,
+  id: nil,
+  inserted_at: nil,
+  name: nil,
+  password_hash: nil,
+  updated_at: nil
+}
+```
+
+O `Changeset` recebe uma struct do tipo User e consegue tanto fazer cast de dados para inserir nessa struct, como também fazer validações e modificações. E a função tem que chamar `changeset` por default do Ecto. A função `cast` pega os params e vai tentar fazer o cast nos campos da struct, e como segundo argumento temos que definir uma lista de campos para cast `@required_params`.
+
+```elixir
+  def changeset(params) do
+    %__MODULE__{}
+    |> cast(params, @required_params)
+  end
+```
+
+No `iex`, criamos o mapa `user_params`
+
+```elixir
+iex> user_params = %{age: 23, address: "Rua das bananeiras", cep: "123", cpf: "123", email: "email", password_hash: "123", name: "Rômulo"}
+%{
+  address: "Rua das bananeiras",
+  age: 23,
+  cep: "123",
+  cpf: "123",
+  email: "email",
+  name: "Rômulo",
+  password_hash: "123"
+}
+
+iex> alias Rockelivery.Use
+Rockelivery.User
+
+iex> User.changeset(user_params)
+#Ecto.Changeset<
+  action: nil,
+  changes: %{
+    address: "Rua das bananeiras",
+    age: 23,
+    cep: "123",
+    cpf: "123",
+    email: "email",
+    name: "Rômulo",
+    password_hash: "123"
+  },
+  errors: [],
+  data: #Rockelivery.User<>,
+  valid?: true
+>
+```
+
+## Agora temos um Changeset do Ecto que é uma struct especial que valida os dados, faz cast dos dados e essa struct vai ser mandada para o banco. O Repo só vai inserir no banco se o Changeset for válido.

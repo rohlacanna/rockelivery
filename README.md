@@ -765,4 +765,68 @@ INSERT INTO "users" ("address","age","cep","cpf","email","name","password_hash",
 
 E vemos pelo `Repo.all(User)`
 
+## Criando a rota de criação de usuários pt 1
+
+Vamos criar a rota que irá criar o usuário pelo http. No arquivo `router.ex` temos o `pipeline` que é uma forma de criar configurações extras que atuam sobre nossa conexão. É isso que o `plug` faz, recebendo, validando e/ou modificando os dados da nossa conexão. O `scope` define um namespace na nossa rota.
+
+```elixir
+  scope "/api", RockeliveryWeb do
+    pipe_through :api
+
+    get "/", WelcomeController, :index
+    resources "/users", UsersController # <-- Adição desta linha
+  end
+```
+
+E criamos o módulo em `users_controller.ex` vazio somente para carregar o que o `resources` faz. Vemos no terminal
+
+```bash
+$ mix phx.routes
+Compiling 2 files (.ex)
+Generated rockelivery app
+       welcome_path  GET     /api                    RockeliveryWeb.WelcomeController :index
+         users_path  GET     /api/users              RockeliveryWeb.UsersController :index
+         users_path  GET     /api/users/:id/edit     RockeliveryWeb.UsersController :edit
+         users_path  GET     /api/users/new          RockeliveryWeb.UsersController :new
+         users_path  GET     /api/users/:id          RockeliveryWeb.UsersController :show
+         users_path  POST    /api/users              RockeliveryWeb.UsersController :create
+         users_path  PATCH   /api/users/:id          RockeliveryWeb.UsersController :update
+                     PUT     /api/users/:id          RockeliveryWeb.UsersController :update
+         users_path  DELETE  /api/users/:id          RockeliveryWeb.UsersController :delete
+live_dashboard_path  GET     /dashboard              Phoenix.LiveView.Plug :home
+live_dashboard_path  GET     /dashboard/:page        Phoenix.LiveView.Plug :page
+live_dashboard_path  GET     /dashboard/:node/:page  Phoenix.LiveView.Plug :page
+          websocket  WS      /live/websocket         Phoenix.LiveView.Socket
+           longpoll  GET     /live/longpoll          Phoenix.LiveView.Socket
+           longpoll  POST    /live/longpoll          Phoenix.LiveView.Socket
+          websocket  WS      /socket/websocket       RockeliveryWeb.UserSocket
+```
+
+Então já temos todas as actions. Como não teremos algumas das rotas, podemos passar a opção de excluir em `resource`
+
+```elixir
+    resources "/users", UsersController, except: [:new, :edit]
+```
+
+No nosso controller, teremos as funções das actions que podem precisar de muitos `alias` renomeados. Então, para evitar isso, podemos criar os arquivos de facade
+
+```elixir
+defmodule RockeliveryWeb.UsersController do
+  use RockeliveryWeb, :controller
+  alias Rockelivery.Users.Create, as: UserCreate
+  alias Rockelivery.Orders.Create, as: OrderCreate
+  #...
+end
+```
+
+Na raiz, temos o arquivo `rockelivery.ex` e chamamos o `defdelegate` que delega a chamada
+
+```elixir
+defmodule Rockelivery do
+  alias Rockelivery.Users.Create, as: UserCreate
+
+  defdelegate create_user(params), to: UserCreate, as: :call
+end
+```
+
 ---

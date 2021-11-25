@@ -829,4 +829,125 @@ defmodule Rockelivery do
 end
 ```
 
+## Criando a rota de criação de usuários pt 2
+
+Adicionamos o `with` no `UserController` para validar os cenários por pattern matching. E podemos colocar vários casos de sucesso de uma vez só. Se usasse `case`, ficaria um `case` encadeado no outro. Se, não tratar o erro especificamente, devolvemos esse erro para quem chamou. Senão, tratamos no `else`.
+
+```elixir
+defmodule RockeliveryWeb.UsersController do
+  use RockeliveryWeb, :controller
+  alias Rockelivery.User
+
+  def create(conn, params) do
+    with {:ok, %User{}} <- Rockelivery.create_user(params),
+         {:ok, %User{}} <- Rockelivery.outra_funcao(params),
+         {:ok, %User{}} <- Rockelivery.outra_funcao2(params) do
+    else
+      :error -> alguma_coisa
+      nil -> outra_coisa
+    end
+  end
+end
+```
+
+Vamos retornar um `201 created` e chamar uma função `render`, que chama uma `view`, que é a definição do json que iremos imprimir para o usuário que fizer a chamada para nossa ação.
+
+```elixir
+defmodule RockeliveryWeb.UsersController do
+  use RockeliveryWeb, :controller
+  alias Rockelivery.User
+
+  def create(conn, params) do
+    with {:ok, %User{} = user} <- Rockelivery.create_user(params) do
+      conn
+      |> put_status(:created)
+      |> render("create.json", user: user)
+    end
+  end
+end
+```
+
+Passamos para nossa `view` esse `user` que recebemos como parâmetro via keyword argument.
+
+Vamos criar a `view` no arquivo `users_view.ex`. Importante a `view` ter o mesmo nome que o `controller`, para o `controller` saber automaticamente qual módulo da `view` que será renderizado.
+
+O esqueleto de uma `view`, basta criar uma função do tipo `render` do tipo `create.json` que vai receber o `user`. Vamos retornar um map que representa um json de criação do usuário. Escolhemos exibir `id` e `name`.
+
+```elixir
+defmodule RockeliveryWeb.UsersView do
+  use RockeliveryWeb, :view
+
+  alias Rockelivery.User
+
+  def render("create.json", %{user: %User{id: id, name: name}}) do
+    %{
+      message: "User created!",
+      user: %{
+        id: id,
+        name: name
+      }
+    }
+  end
+end
+```
+
+Vamos para o terminal e rodar o servidor
+
+```bash
+$ mix phx.server
+```
+
+E vamos usar o Insomnia (client http) para fazer chamadas para o servidor.
+
+Vamos enviar uma requisição `POST` para `http://localhost:4000/api/users` e com um body:
+
+```json
+{
+  "address": "Rua das bananeiras 15",
+  "age": 23,
+  "cep": "12345678",
+  "cpf": "12345678909",
+  "email": "romulo9@banana.com",
+  "name": "Rômulo Silva",
+  "password": "123456"
+}
+```
+
+Recebemos como retorno algo do tipo
+
+```json
+{
+  "message": "User created!",
+  "user": {
+    "id": "64333921-cde7-45d2-b547-5c450c49e808",
+    "name": "Rômulo Silva"
+  }
+}
+```
+
+Para não ter que ficar escrevendo que vai retornar o `id`, o `name`, tem uma forma mais fácil. No `mix.exs` tem uma lib `jason`.
+
+Adicionamos ao `user.ex` o `@derive` passando uma tupla com o `Jason.Encoder` e `only:` com a lista do que quero mostrar na minha `view`.
+
+```elixir
+  @derive {Jason.Encoder, only: [:id, :age, :cpf, :address, :email, :name]}
+```
+
+Na `users_view` passamos a struct toda de `user`
+
+```elixir
+defmodule RockeliveryWeb.UsersView do
+  use RockeliveryWeb, :view
+
+  alias Rockelivery.User
+
+  def render("create.json", %{user: %User{} = user}) do
+    %{
+      message: "User created!",
+      user: user
+    }
+  end
+end
+```
+
 ---

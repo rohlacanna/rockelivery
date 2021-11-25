@@ -198,4 +198,84 @@ VALOOOOOOOR:::::::: %{"id" => "12345"}
 }
 ```
 
+## Criando a migration do User
+
+A primeira ação que iremos fazer do CRUD do usuário é a criação no banco de dados. Para criar a tabela no nosso banco, digitamos no terminal
+
+```bash
+$ mix ecto.gen.migration create_users_table
+Compiling 2 files (.ex)
+* creating priv/repo/migrations/20211125154714_create_users_table.exs
+```
+
+O arquivo de migration mapeia como o banco de dados está sendo construído. Quais tabelas, quais campos nas tabelas e qual a ordem que elas devem ser criadas. Pelo comando no terminal, é gerado um timestamp pelo qual o Ecto saberá qual ordem seguir para criar as tabelas.
+
+Dentro da função `change` que criamos as especificações da nossa tabela e do nosso banco de dados. Tudo que criarmos dentro de `change` já é feita a criação e o rollback.
+
+Iremos salvar no banco o campo `password_hash`, que será a senha criptografada do nosso usuário
+
+Adicionamos o `timestamps()` que adiciona na tabela os campos `inserted_at` e `updated_at`, que mantém o tracking de data completa quando um registro foi inserido e quando foi atualizado, principalmente, para criar relatórios e ordenação.
+
+Por fim, vamos criar dois index, pois não queremos usuários com mesmo cpf e nem com mesmo e-mail.
+
+Por default, os `id` são inteiros. Para alterar para uuid, temos que alterar nas configurações do projeto `config.exs` e adicionamos
+
+```elixir
+config :rockelivery, Rockelivery.Repo,
+  migration_primary_key: [type: :binary_id],
+  migration_foreign_key: [type: :binary_id]
+```
+
+`:binary_id` é o uuid do tipo uuid4.
+
+Vamos resetar o banco
+
+```bash
+$ mix ecto.reset
+Compiling 12 files (.ex)
+Generated rockelivery app
+The database for Rockelivery.Repo has been dropped
+The database for Rockelivery.Repo has been created
+
+12:57:17.100 [info]  == Running 20211125154714 Rockelivery.Repo.Migrations.CreateUsersTable.change/0 forward
+
+12:57:17.102 [info]  create table users
+
+12:57:17.122 [info]  create index users_cpf_index
+
+12:57:17.126 [info]  create index users_email_index
+
+12:57:17.130 [info]  == Migrated 20211125154714 in 0.0s
+```
+
+Ou podemos rodar assim
+
+```bash
+$ mix ecto.drop
+The database for Rockelivery.Repo has been dropped
+
+$ mix ecto.create
+The database for Rockelivery.Repo has been created
+
+$ mix ecto.migrate
+
+12:59:27.100 [info]  == Running 20211125154714 Rockelivery.Repo.Migrations.CreateUsersTable.change/0 forward
+
+12:59:27.102 [info]  create table users
+
+12:59:27.122 [info]  create index users_cpf_index
+
+12:59:27.126 [info]  create index users_email_index
+
+12:59:27.130 [info]  == Migrated 20211125154714 in 0.0s
+```
+
+E se rodar de novo, já estão executando:
+
+```bash
+$ mix ecto.migrate
+
+23:42:29.354 [info]  Migrations already up
+```
+
 ---

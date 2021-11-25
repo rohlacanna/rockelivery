@@ -371,3 +371,258 @@ iex> User.changeset(user_params)
 ```
 
 ## Agora temos um Changeset do Ecto que é uma struct especial que valida os dados, faz cast dos dados e essa struct vai ser mandada para o banco. O Repo só vai inserir no banco se o Changeset for válido.
+
+## Criando o schema do User pt 2
+
+Vamos criar a validação pela função `validate_required` que também recebe uma lista.
+
+```elixir
+  def changeset(params) do
+    %__MODULE__{}
+    |> cast(params, @required_params)
+    |> validate_required(@required_params)
+  end
+```
+
+No `iex`, vamos remover o `name` de `user_params` e tentar criar o changeset novamente
+
+```elixir
+iex> user_params = %{address: "Rua das bananeiras", age: 23, cep: "123", cpf: "123", email: "email", password_hash: "123"
+%{
+  address: "Rua das bananeiras",
+  age: 23,
+  cep: "123",
+  cpf: "123",
+  email: "email",
+  password_hash: "123"
+}
+
+iex> User.changeset(user_params)
+#Ecto.Changeset<
+  action: nil,
+  changes: %{
+    address: "Rua das bananeiras",
+    age: 23,
+    cep: "123",
+    cpf: "123",
+    email: "email",
+    password_hash: "123"
+  },
+  errors: [name: {"can't be blank", [validation: :required]}],
+  data: #Rockelivery.User<>,
+  valid?: false
+>
+```
+
+E vamos adicionar mais validações
+
+```elixir
+  def changeset(params) do
+    %__MODULE__{}
+    |> cast(params, @required_params)
+    |> validate_required(@required_params)
+    |> validate_length(:password_hash, min: 6)
+    |> validate_length(:cep, is: 8)
+    |> validate_length(:cpf, is: 11)
+    |> validate_number(:age, greater_than_or_equal_to: 18)
+    |> unique_constraint([:email])
+    |> unique_constraint([:cpf])
+  end
+```
+
+E testar no `iex`
+
+```elixir
+iex> user_params = %{address: "Rua das bananeiras", age: 16, cep: "123", cpf: "123", email: "email", name: "Rômulo", password_hash: "123"}
+%{
+  address: "Rua das bananeiras",
+  age: 16,
+  cep: "123",
+  cpf: "123",
+  email: "email",
+  name: "Rômulo",
+  password_hash: "123"
+}
+
+iex> User.changeset(user_params)
+#Ecto.Changeset<
+  action: nil,
+  changes: %{
+    address: "Rua das bananeiras",
+    age: 16,
+    cep: "123",
+    cpf: "123",
+    email: "email",
+    name: "Rômulo",
+    password_hash: "123"
+  },
+  errors: [
+    age: {"must be greater than or equal to %{number}",
+     [validation: :number, kind: :greater_than_or_equal_to, number: 18]},
+    cpf: {"should be %{count} character(s)",
+     [count: 11, validation: :length, kind: :is, type: :string]},
+    cep: {"should be %{count} character(s)",
+     [count: 8, validation: :length, kind: :is, type: :string]},
+    password_hash: {"should be at least %{count} character(s)",
+     [count: 6, validation: :length, kind: :min, type: :string]}
+  ],
+  data: #Rockelivery.User<>,
+  valid?: false
+>
+
+iex> user_params = %{address: "Rua das bananeiras", age: 23, cep: "12345678", cpf: "12345678901", email: "email", name: "Rômulo", password_hash: "123456"}
+%{
+  address: "Rua das bananeiras",
+  age: 23,
+  cep: "12345678",
+  cpf: "12345678901",
+  email: "email",
+  name: "Rômulo",
+  password_hash: "123456"
+}
+
+iex> User.changeset(user_params)
+#Ecto.Changeset<
+  action: nil,
+  changes: %{
+    address: "Rua das bananeiras",
+    age: 23,
+    cep: "12345678",
+    cpf: "12345678901",
+    email: "email",
+    name: "Rômulo",
+    password_hash: "123456"
+  },
+  errors: [],
+  data: #Rockelivery.User<>,
+  valid?: true
+>
+```
+
+Podemos fazer a validação por regex, como no email
+
+```elixir
+    |> validate_format(:email, ~r/@/)
+```
+
+O campo `password_hash` existe para salvar no banco a senha com um hash e para quem usa, é estranho expor esse hash. A primeira coisa que faremos é criar um campo virtual que existe no nosso schema mas não existe no banco.
+
+```elixir
+    field :password, :string, virtual: true
+```
+
+E também alteramos para `@required_params` como `:password`
+
+```elixir
+  @required_params [:address, :age, :cep, :cpf, :email, :name, :password]
+```
+
+Se passar por todas validações do Ecto e recebermos um changeset com valid true, vamos adicionar o passo de criptografar esse `password` e salvar no campo `password_hash`. Caso seja inválido, só devolve o changeset.
+
+Vamos criar a função privada `put_password_hash` que recebe um struct `%Changeset{}` que se tiver um campo `valid` que esteja `true`, vamos ler o campo `password` e vamos chamar a função `change` do `Ecto.Changeset`, que recebe um dado e um novo mapa, aplicando as novas modificações ao Changeset.
+
+Precisamos passar um novo map com o nome do campo e o novo valor. Para isso, usaremos uma lib `Pbkdf2` que faz isso já. Na função `add_hash` que recebe uma string, criptografa.
+
+Vamos adicionar a lib no `mix.exs` nas dependências
+
+```elixir
+      {:pbkdf2_elixir, "~> 1.3"}
+```
+
+A função `add_hash` recebe a string, criptografa e cria o map da forma que o Ecto espera e com o nome do campo `password_hash`.
+
+```elixir
+iex> Pbkdf2.add_hash("123456")
+%{
+  password_hash: "$pbkdf2-sha512$160000$ts.ScEst971Z7I/EIG/elA$UZJ/X5cbuMqRUhGexkcp7U7z.weO13lmp5zpN0mObsyBWOGItmNJU3bXjJKd6ydDlkLb9h0yZOOqj2Gsmrv36g"
+}
+```
+
+E com isso, a função `change` receberá isso como parâmetro
+
+```elixir
+defmodule Rockelivery.User do
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  alias Ecto.Changeset
+
+  @primary_key {:id, :binary_id, autogenerate: true}
+
+  @required_params [:address, :age, :cep, :cpf, :email, :name, :password]
+
+  schema "users" do
+    field :address, :string
+    field :age, :integer
+    field :cep, :string
+    field :cpf, :string
+    field :email, :string
+    field :name, :string
+    field :password, :string, virtual: true
+    field :password_hash, :string
+
+    timestamps()
+  end
+
+  def changeset(params) do
+    %__MODULE__{}
+    |> cast(params, @required_params)
+    |> validate_required(@required_params)
+    |> validate_length(:password_hash, min: 6)
+    |> validate_length(:cep, is: 8)
+    |> validate_length(:cpf, is: 11)
+    |> validate_number(:age, greater_than_or_equal_to: 18)
+    |> validate_format(:email, ~r/@/)
+    |> unique_constraint([:email])
+    |> unique_constraint([:cpf])
+    |> put_password_hash()
+  end
+
+  defp put_password_hash(%Changeset{valid?: true, changes: %{password: password}} = changeset) do
+    change(changeset, Pbkdf2.add_hash(password))
+  end
+end
+```
+
+E no `iex` podemos ver como fica
+
+```elixir
+iex> user_params = %{address: "Rua das bananeiras", age: 23, cep: "12345678", cpf: "12345678901", email: "romulo@banana.com", name: "Rômulo", password: "123456"}
+%{
+  address: "Rua das bananeiras",
+  age: 23,
+  cep: "12345678",
+  cpf: "12345678901",
+  email: "romulo@banana.com",
+  name: "Rômulo",
+  password: "123456"
+}
+
+iex> User.changeset(user_params)
+#Ecto.Changeset<
+  action: nil,
+  changes: %{
+    address: "Rua das bananeiras",
+    age: 23,
+    cep: "12345678",
+    cpf: "12345678901",
+    email: "romulo@banana.com",
+    name: "Rômulo",
+    password: "123456",
+    password_hash: "$pbkdf2-sha512$160000$HhKMxBhAFwTmSUmMOT3ZWQ$hz99Qg76qUzoQSGK9RorlAAgniZuaCrYfPXBKbC5rpkR8jJksdcF6ST1DmhMy4FITXP4Q6ExHx75LwmUz./Byw"
+  },
+  errors: [],
+  data: #Rockelivery.User<>,
+  valid?: true
+>
+```
+
+O campo `password` ainda aparece por ser virtual, mas na hora de salvar no banco não vai existir essa coluna.
+
+Quando o changeset for inválido, devemos retornar o próprio changeset, então, adicionamos outra função privada para capturar a exceção
+
+```elixir
+  defp put_password_hash(changeset), do: changeset
+```
+
+---

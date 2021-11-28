@@ -1090,4 +1090,48 @@ E com cep e cpf
 
 Todas validações de memória são mostradas separadamente, mas as `unique_constraints` temos que ir no banco validar se já existem.
 
+## Possibilitando múltiplos status de erro
+
+Vamos flexibilizar o fallback controller para escolher o status http conforme tratativa de erro.
+
+Em `create.ex` ao invés de só devolve um `:ok`, vamos adicionar um `handle_insert` que no caso de sucesso só retorna o result. E para caso de erro, enviaremos um mapa contendo o status (nesse caso será um `:bad_request`) e o result. Então, conseguiremos alterar o status.
+
+```elixir
+defmodule Rockelivery.Users.Create do
+  alias Rockelivery.{Repo, User}
+
+  def call(params) do
+    params
+    |> User.changeset()
+    |> Repo.insert()
+    |> handle_insert()
+  end
+
+  defp handle_insert({:ok, %User{}} = result), do: result
+
+  defp handle_insert({:error, result}) do
+    {:error, %{status: :bad_request, result: result}}
+  end
+end
+```
+
+Em `fallback_controller.ex`, vamos receber esse mapa contendo `status` e `result`. E também mudamos o render para `error.json`
+
+```elixir
+  def call(conn, {:error, %{status: status, result: result}}) do
+    conn
+    |> put_status(status)
+    |> put_view(ErrorView)
+    |> render("error.json", result: result)
+  end
+```
+
+E finalmente, renomeamos em `error_view.ex` para `error.json`
+
+```elixir
+  def render("error.json", %{result: %Changeset{} = changeset}) do
+    %{message: translate_errors(changeset)}
+  end
+```
+
 ---

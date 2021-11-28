@@ -950,4 +950,144 @@ defmodule RockeliveryWeb.UsersView do
 end
 ```
 
+## Tratando erros com o fallback controller
+
+No `with` dentro do `create` de user, se não der pattern matching, o erro vai retornar para quem chamou. No phoenix, temos a convenção de tratar erros com fallback controller. Se ninguém tratar determinado retorno, o fallback vai ser o último na linha de pipeline de repassagem de parâmetros para receber esse retorno. Então, é bom centralizar a tratativa de erros nesse fallback controller.
+
+No controller do user, vamos passar um `action_fallback` e passar o nome de um controller, no caso, `FallbackController`
+
+```elixir
+defmodule RockeliveryWeb.UsersController do
+  use RockeliveryWeb, :controller
+
+  alias Rockelivery.User
+  alias RockeliveryWeb.FallbackController
+
+  action_fallback FallbackController
+
+  def create(conn, params) do
+    with {:ok, %User{} = user} <- Rockelivery.create_user(params) do
+      conn
+      |> put_status(:created)
+      |> render("create.json", user: user)
+    end
+  end
+end
+```
+
+Vamos criar um novo arquivo `fallback_controller.ex` que será responsável por renderizar os erros quando eles existirem.
+
+```elixir
+defmodule RockeliveryWeb.FallbackController do
+  use RockeliveryWeb, :controller
+
+  alias RockeliveryWeb.ErrorView
+
+  def call(conn, {:error, result}) do
+    conn
+    |> put_status(:bad_request)
+    |> put_view(ErrorView)
+    |> render("400.json", result: result)
+  end
+end
+```
+
+Um controller de Fallback, não definimos nenhuma action. Sempre vai executar uma função chamada `call` que recebe a conexão e os parâmetros. Se receber um `{:error, result}`, pegar a `conn` e colocar um status, chamar uma `view` e renderizar uma view `400.json` e enviar o `result`.
+
+Ao testar no insomnia, temos o retorno do erro
+
+```json
+{
+  "errors": {
+    "detail": "Bad Request"
+  }
+}
+```
+
+A `ErrorView` tem como default um `template_not_found`. Agora temos que estender para renderizar os erros do changeset.
+
+```elixir
+  def render("400.json", %{result: result}) do
+    %{message: "Deu ruim"}
+  end
+```
+
+Vamos no insominia de novo
+
+```json
+{
+  "message": "Deu ruim"
+}
+```
+
+O que queremos exigir são os erros do Changeset. Se por pattern matching recebermos um `Changeset`, iremos traduzir a mensagem de erro numa função `translate_errors`. O Ecto já tem uma função `traverse_errors` que traduz o erro do Changeset que podemos importar para usá-la (preciso falar sua aridade).
+
+```elixir
+defmodule RockeliveryWeb.ErrorView do
+  use RockeliveryWeb, :view
+
+  import Ecto.Changeset, only: [traverse_errors: 2]
+
+  alias Ecto.Changeset
+
+  # If you want to customize a particular status code
+  # for a certain format, you may uncomment below.
+  # def render("500.json", _assigns) do
+  #   %{errors: %{detail: "Internal Server Error"}}
+  # end
+
+  # By default, Phoenix returns the status message from
+  # the template name. For example, "404.json" becomes
+  # "Not Found".
+  def template_not_found(template, _assigns) do
+    %{errors: %{detail: Phoenix.Controller.status_message_from_template(template)}}
+  end
+
+  def render("400.json", %{result: %Changeset{} = changeset}) do
+    %{message: translate_errors(changeset)}
+  end
+
+  defp translate_errors(changeset) do
+    traverse_errors(changeset, fn {msg, opts} ->
+      Enum.reduce(opts, msg, fn {key, value}, acc ->
+        String.replace(acc, "%{#{key}}", to_string(value))
+      end)
+    end)
+  end
+end
+```
+
+E testando no insomnia uma requisição de criação de user com um cpf já utilizado anteriormente
+
+```json
+{
+  "message": {
+    "cpf": ["has already been taken"]
+  }
+}
+```
+
+Testando com uma idade menor
+
+```json
+{
+  "message": {
+    "age": ["must be greater than or equal to 18"]
+  }
+}
+```
+
+E com cep e cpf
+
+```json
+{
+  "message": {
+    "cep": ["should be 8 character(s)"],
+    "cpf": ["should be 11 character(s)"]
+  }
+}
+```
+
+Todas validações de memória são mostradas separadamente, mas as `unique_constraints` temos que ir no banco validar se já existem.
+
 ---

@@ -3,7 +3,7 @@ defmodule Rockelivery.Factory do
 
   def user_params_factory do
     %{
-      age: 27,
+      age: 23,
       address: "Rua das bananeiras, 15",
       cep: "12345678",
       cpf: "12345678901",

@@ -1,7 +1,15 @@
 defmodule Rockelivery.Users.Create do
   alias Rockelivery.{Error, Repo, User}
+  alias Rockelivery.ViaCep.Client
 
-  def call(params) do
+  def call(%{"cep" => cep} = params) do
+    case Client.get_cep_info(cep) do
+      {:ok, _cep_info} -> create_user(params)
+      {:error, _result} = error -> error
+    end
+  end
+
+  defp create_user(params) do
     params
     |> User.changeset()
     |> Repo.insert()

@@ -2,7 +2,8 @@ defmodule Rockelivery.Users.Create do
   alias Rockelivery.{Error, Repo, User}
   alias Rockelivery.ViaCep.Client
 
-  def call(%{"cep" => cep} = params) do
+  def call(params) do
+    cep = Map.get(params, "cep")
     changeset = User.changeset(params)
 
     with {:ok, %User{}} <- User.build(changeset),

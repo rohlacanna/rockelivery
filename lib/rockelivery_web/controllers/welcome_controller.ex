@@ -5,6 +5,5 @@ defmodule RockeliveryWeb.WelcomeController do
     conn
     |> put_status(:ok)
     |> text("Welcome!")
-    |> IO.inspect()
   end
 end

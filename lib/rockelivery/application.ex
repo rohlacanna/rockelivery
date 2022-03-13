@@ -15,9 +15,10 @@ defmodule Rockelivery.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Rockelivery.PubSub},
       # Start the Endpoint (http/https)
-      RockeliveryWeb.Endpoint
+      RockeliveryWeb.Endpoint,
       # Start a worker by calling: Rockelivery.Worker.start_link(arg)
       # {Rockelivery.Worker, arg}
+      Rockelivery.Orders.ReportRunner
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

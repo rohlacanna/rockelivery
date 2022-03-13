@@ -15,6 +15,7 @@ defmodule Rockelivery.Orders.ReportRunner do
 
   @impl true
   def init(state) do
+    Logger.info("Report Runner started")
     schedule_report_generation()
 
     {:ok, state}
@@ -31,6 +32,6 @@ defmodule Rockelivery.Orders.ReportRunner do
   end
 
   def schedule_report_generation do
-    Process.send_after(self(), :generate, 1000 * 60)
+    Process.send_after(self(), :generate, 1000 * 10)
   end
 end

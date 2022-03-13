@@ -46,7 +46,7 @@ defmodule RockeliveryWeb.UsersControllerTest do
           "age" => ["can't be blank"],
           "cep" => ["can't be blank"],
           "cpf" => ["can't be blank"],
-          "email" => ["test"]
+          "email" => ["can't be blank"]
         }
       }
 

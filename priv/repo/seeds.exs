@@ -35,7 +35,7 @@ item1 = %Item{
   photo: "priv/photos/tomate_sal.png"
 }
 
-item1 = %Item{
+item2 = %Item{
   category: :food,
   description: "tomate sem sal",
   price: Decimal.new("10.50"),

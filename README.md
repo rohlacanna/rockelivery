@@ -1,7 +1,3 @@
-# Rockelivery
-
-<br />
-
 <p align="center">
   <img alt="Logo" src=".github/logo.png" width="600px" />
 </p>

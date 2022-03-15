@@ -35,7 +35,6 @@
 - [Features](#rocket-features)
 - [Installation](#wrench-installation)
 - [Getting started](#bulb-getting-started)
-- [Endpoints](#triangular_flag_on_post-endpoints)
 - [Techs](#fire-techs)
 - [Issues](#bug-issues)
 - [License](#book-license)
@@ -79,3 +78,31 @@ In case you don't have an SSH key on your GitHub account, you can clone the proj
 3. On the `config/dev.exs` and `config/test.exs` files, change your postgres **user** and **password**
 4. Run `mix ecto.migrate` to run the migrations to your database
 5. Run `mix phx.server` to start the server on port 4000
+
+# :fire: Techs
+
+### Elixir (language)
+
+### Phoenix (web framework)
+
+- Ecto
+- Elixir GenServer (orders report)
+- Guardian (authentication)
+- PBKDF2 (password cryptography)
+- Tesla (http client to external apis)
+
+# :bug: Issues
+
+Find a bug or error on the project? Please, feel free to send me the issue on the [Rockelivery issues area](https://github.com/RomuloHe4rt/Rockelivery/issues), with a title and a description of your found!
+
+If you know the origin of the error and know how to resolve it, please, send me a pull request, I will love to review it!
+
+# :book: License
+
+Released in 2022.
+
+This project is under the [MIT license](https://github.com/RomuloHe4rt/Rockelivery/blob/main/LICENSE).
+
+<p align="center">
+	< keep coding /> :rocket: :heart:
+</p>

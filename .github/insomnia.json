@@ -1,0 +1,302 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2022-04-02T03:10:49.589Z",
+  "__export_source": "insomnia.desktop.app:v2022.2.1",
+  "resources": [
+    {
+      "_id": "req_dfbf9b2210354a55adcca86585075a95",
+      "parentId": "fld_82b65fe5d1bd4b1f915783c16c101301",
+      "modified": 1648868976786,
+      "created": 1646954495269,
+      "url": "http://localhost:4000/api/orders",
+      "name": "create",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"user_id\": \"c88e2c29-3455-4365-b3fa-30dc64bbc974\",\n\t\"items\": [\n\t\t{\n\t\t\t\"id\": \"a35849dc-9854-470b-8a63-841dde7128f0\",\n\t\t\t\"quantity\": 2\n\t\t},\n\t\t{\n\t\t\t\"id\": \"c025b1fe-2403-474a-aaad-36e361caceb1\",\n\t\t\t\"quantity\": 1\n\t\t}\n\t],\n\t\"address\": \"Rua das bananeiras, 15\",\n\t\"comments\": \"Sem canela na banana\",\n\t\"payment_method\": \"money\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_833f702827b34d4da723cd4b73c79783"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJyb2NrZWxpdmVyeSIsImV4cCI6MTY0OTQ0NzY3OCwiaWF0IjoxNjQ3MDI4NDc4LCJpc3MiOiJyb2NrZWxpdmVyeSIsImp0aSI6IjZkZWE0MmRiLTcwZTAtNGQyMi05ZjE0LWFjMzIwZTIxNzA3YiIsIm5iZiI6MTY0NzAyODQ3Nywic3ViIjoiYzg4ZTJjMjktMzQ1NS00MzY1LWIzZmEtMzBkYzY0YmJjOTc0IiwidHlwIjoiYWNjZXNzIn0.n_7n39W8oeGBle_cwvD1Y7rwnJ5wROrvlhzPxdqrMi-HIjtwS_XukdOQkTIFtOCp83VJ3FvLt7T1JlN4yrcu9Q"
+      },
+      "metaSortKey": -1646954495269,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_82b65fe5d1bd4b1f915783c16c101301",
+      "parentId": "wrk_dc5bea3709734c5ba12c6c420e4ff965",
+      "modified": 1646954420573,
+      "created": 1646954377493,
+      "name": "orders",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1646954377593,
+      "_type": "request_group"
+    },
+    {
+      "_id": "wrk_dc5bea3709734c5ba12c6c420e4ff965",
+      "parentId": null,
+      "modified": 1646856782349,
+      "created": 1646856782349,
+      "name": "New Document",
+      "description": "",
+      "scope": "design",
+      "_type": "workspace"
+    },
+    {
+      "_id": "req_e232405bd567410b9185e504b01065ca",
+      "parentId": "fld_68b8cfb559e54472a692631cad7fde5b",
+      "modified": 1648868972970,
+      "created": 1646954489703,
+      "url": "http://localhost:4000/api/items",
+      "name": "create",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"category\": \"food\",\n\t\"description\": \"banana cozida\",\n\t\"price\": \"10.00\",\n\t\"photo\": \"/priv/photos/banana_cozida.jpg\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_cf670ace21c14e5fae9a7c2be2a422cc"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJyb2NrZWxpdmVyeSIsImV4cCI6MTY0OTQ0NzY3OCwiaWF0IjoxNjQ3MDI4NDc4LCJpc3MiOiJyb2NrZWxpdmVyeSIsImp0aSI6IjZkZWE0MmRiLTcwZTAtNGQyMi05ZjE0LWFjMzIwZTIxNzA3YiIsIm5iZiI6MTY0NzAyODQ3Nywic3ViIjoiYzg4ZTJjMjktMzQ1NS00MzY1LWIzZmEtMzBkYzY0YmJjOTc0IiwidHlwIjoiYWNjZXNzIn0.n_7n39W8oeGBle_cwvD1Y7rwnJ5wROrvlhzPxdqrMi-HIjtwS_XukdOQkTIFtOCp83VJ3FvLt7T1JlN4yrcu9Q",
+        "disabled": false
+      },
+      "metaSortKey": -1646954489703,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_68b8cfb559e54472a692631cad7fde5b",
+      "parentId": "wrk_dc5bea3709734c5ba12c6c420e4ff965",
+      "modified": 1646954423505,
+      "created": 1646954383093,
+      "name": "Item",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1646954377568,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_116101c9cc3a4f5db5c3d89e53186269",
+      "parentId": "fld_a0e4abd5592d4e029b1b0d9eced9be7f",
+      "modified": 1648868974055,
+      "created": 1646954436704,
+      "url": "https://winged-infamous-cutworm.gigalixirapp.com/api/users",
+      "name": "create",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"address\": \"Rua das bananeiras 15\",\n\t\"age\": 23,\n\t\"cep\": \"26250050\",\n\t\"cpf\": \"12345678958\",\n\t\"email\": \"romulo@banana.com\",\n\t\"name\": \"Rômulo Silva\",\n\t\"password\": \"123456\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_f8eccedc82814172b43346ba9a24db10"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1646954436704,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_a0e4abd5592d4e029b1b0d9eced9be7f",
+      "parentId": "wrk_dc5bea3709734c5ba12c6c420e4ff965",
+      "modified": 1646954417183,
+      "created": 1646954387021,
+      "name": "User",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1646954377543,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_6ca7005d80b84952bd4e799df403fe13",
+      "parentId": "fld_a0e4abd5592d4e029b1b0d9eced9be7f",
+      "modified": 1647022309769,
+      "created": 1646954443563,
+      "url": "http://localhost:4000/api/users/<user_id>",
+      "name": "update",
+      "description": "",
+      "method": "PUT",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1646954436654,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_f41259894b054846bdb37d1835c56199",
+      "parentId": "fld_a0e4abd5592d4e029b1b0d9eced9be7f",
+      "modified": 1647035659627,
+      "created": 1646954467652,
+      "url": "http://localhost:4000/api/users/<user_id>",
+      "name": "delete",
+      "description": "",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1646954436604,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_c3839fe37aae42cca1eb0098b04e9bd6",
+      "parentId": "fld_a0e4abd5592d4e029b1b0d9eced9be7f",
+      "modified": 1647217030458,
+      "created": 1646954475107,
+      "url": "https://winged-infamous-cutworm.gigalixirapp.com/api/users/d3b8a0f9-186e-42ef-9441-5f7e765f852d",
+      "name": "get",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJyb2NrZWxpdmVyeSIsImV4cCI6MTY0OTYzNjEyOSwiaWF0IjoxNjQ3MjE2OTI5LCJpc3MiOiJyb2NrZWxpdmVyeSIsImp0aSI6IjUzMDQ4ZWYxLTBmNjctNGUyMi1hY2VmLWRmNzUxNzc0NDdmMyIsIm5iZiI6MTY0NzIxNjkyOCwic3ViIjoiZDNiOGEwZjktMTg2ZS00MmVmLTk0NDEtNWY3ZTc2NWY4NTJkIiwidHlwIjoiYWNjZXNzIn0.mXPp_u96uh8apApnvYZLYIIz5R0fmqS9fSccALj6RRtFKMI0aYz9ls7Ez2e9YEOKU5kAVkcNY-mT5u2BXJGFVA",
+        "disabled": false
+      },
+      "metaSortKey": -1646954436554,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_1d0be9d1d0c14de586814f1be0594c20",
+      "parentId": "fld_a0e4abd5592d4e029b1b0d9eced9be7f",
+      "modified": 1648868975896,
+      "created": 1646954482145,
+      "url": "http://localhost:4000/api/users/signin",
+      "name": "signin",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"id\": \"c88e2c29-3455-4365-b3fa-30dc64bbc974\",\n\t\"password\": \"123456\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_55428979560143848a3d3d9447fb8910"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1646954436504,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "env_d74c05fca60061c456c4e546120080c206422371",
+      "parentId": "wrk_dc5bea3709734c5ba12c6c420e4ff965",
+      "modified": 1646856782378,
+      "created": 1646856782378,
+      "name": "Base Environment",
+      "data": {},
+      "dataPropertyOrder": null,
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1646856782378,
+      "_type": "environment"
+    },
+    {
+      "_id": "jar_d74c05fca60061c456c4e546120080c206422371",
+      "parentId": "wrk_dc5bea3709734c5ba12c6c420e4ff965",
+      "modified": 1646856782385,
+      "created": 1646856782385,
+      "name": "Default Jar",
+      "cookies": [],
+      "_type": "cookie_jar"
+    },
+    {
+      "_id": "spc_4572b57b4cff4b9c9f80c3acb5e5f53f",
+      "parentId": "wrk_dc5bea3709734c5ba12c6c420e4ff965",
+      "modified": 1647028459744,
+      "created": 1646856782370,
+      "fileName": "Rockelivery",
+      "contents": "",
+      "contentType": "yaml",
+      "_type": "api_spec"
+    },
+    {
+      "_id": "uts_81b8571c178e461faa9b603dcf4e85f5",
+      "parentId": "wrk_dc5bea3709734c5ba12c6c420e4ff965",
+      "modified": 1646856782395,
+      "created": 1646856782395,
+      "name": "Example Test Suite",
+      "_type": "unit_test_suite"
+    }
+  ]
+}

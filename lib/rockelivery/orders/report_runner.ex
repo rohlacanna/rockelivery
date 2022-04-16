@@ -21,6 +21,7 @@ defmodule Rockelivery.Orders.ReportRunner do
     {:ok, state}
   end
 
+  # coveralls-ignore-start
   @impl true
   def handle_info(:generate, state) do
     Logger.info("Generating report...")
@@ -30,6 +31,8 @@ defmodule Rockelivery.Orders.ReportRunner do
 
     {:noreply, state}
   end
+
+  # coveralls-ignore-stop
 
   def schedule_report_generation do
     Process.send_after(self(), :generate, 1000 * 10)

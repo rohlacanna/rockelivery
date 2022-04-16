@@ -73,6 +73,8 @@ defmodule RockeliveryWeb do
   When used, dispatch to the appropriate controller/view/etc.
   """
   defmacro __using__(which) when is_atom(which) do
+    # coveralls-ignore-start
     apply(__MODULE__, which, [])
+    # coveralls-ignore-stop
   end
 end

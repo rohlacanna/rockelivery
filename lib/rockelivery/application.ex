@@ -31,7 +31,9 @@ defmodule Rockelivery.Application do
   # whenever the application is updated.
   @impl true
   def config_change(changed, _new, removed) do
+    # coveralls-ignore-start
     RockeliveryWeb.Endpoint.config_change(changed, removed)
+    # coveralls-ignore-stop
     :ok
   end
 end

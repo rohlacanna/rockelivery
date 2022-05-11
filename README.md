@@ -5,20 +5,20 @@
 <h1 align="center" style="text-align: center;">Rockelivery</h1>
 
 <p align="center">
-	<a href="https://github.com/rohlacnna">
+	<a href="https://github.com/rohlacanna">
 		<img alt="Author" src="https://img.shields.io/badge/author-Romulo%20Silva-FEBE53?style=flat" />
 	</a>
 	<a href="#">
 		<img alt="Languages" src="https://img.shields.io/github/languages/count/rohlacnna/Rockelivery?color=FEBE53&style=flat" />
 	</a>
-	<a href="hhttps://github.com/rohlacnna/Rockelivery/stargazers">
+	<a href="hhttps://github.com/rohlacanna/Rockelivery/stargazers">
 		<img alt="Stars" src="https://img.shields.io/github/stars/rohlacnna/Rockelivery?color=FEBE53&style=flat" />
 	</a>
-	<a href="https://github.com/rohlacnna/Rockelivery/network/members">
-		<img alt="Forks" src="https://img.shields.io/github/forks/rohlacnna/Rockelivery?color=FEBE53&style=flat" />
+	<a href="https://github.com/rohlacanna/Rockelivery/network/members">
+		<img alt="Forks" src="https://img.shields.io/github/forks/rohlacanna/Rockelivery?color=FEBE53&style=flat" />
 	</a>
-  <a href="https://codecov.io/gh/rohlacnna/rockelivery">
-  <img src="https://codecov.io/gh/rohlacnna/rockelivery/branch/master/graph/badge.svg?token=5DLTJBE2CO"/>
+  <a href="https://codecov.io/gh/rohlacanna/rockelivery">
+  <img src="https://codecov.io/gh/rohlacanna/rockelivery/branch/master/graph/badge.svg?token=5DLTJBE2CO"/>
 </a>
 </p>
 

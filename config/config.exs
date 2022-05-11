@@ -14,7 +14,7 @@ config :rockelivery, Rockelivery.Users.Create, via_cep_adapter: Rockelivery.ViaC
 
 config :rockelivery, RockeliveryWeb.Auth.Guardian,
   issuer: "rockelivery",
-  secret_key: "7F8vQLzGdwhDfAniZnZOv++BwkxwR4MVk5vjSvQzD79ygfuXbxwOhkFr6YwL1wLo"
+  secret_key: "WNcjwURivSFySqME3JmB0TRrUnXIoeOEg0sDalNrL7ZBM9vuCpBY4Fy3Mf3a733D"
 
 config :rockelivery, RockeliveryWeb.Auth.Pipeline,
   module: RockeliveryWeb.Auth.Guardian,

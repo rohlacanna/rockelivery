@@ -4,7 +4,7 @@ defmodule RockeliveryWeb.ItemsController do
   alias Rockelivery.Item
   alias RockeliveryWeb.FallbackController
 
-  action_fallback FallbackController
+  action_fallback(FallbackController)
 
   def create(conn, params) do
     with {:ok, %Item{} = item} <- Rockelivery.create_item(params) do

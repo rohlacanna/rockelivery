@@ -4,7 +4,7 @@ defmodule RockeliveryWeb.OrdersController do
   alias Rockelivery.Order
   alias RockeliveryWeb.FallbackController
 
-  action_fallback FallbackController
+  action_fallback(FallbackController)
 
   def create(conn, params) do
     with {:ok, %Order{} = order} <- Rockelivery.create_order(params) do

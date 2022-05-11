@@ -13,12 +13,12 @@ defmodule Rockelivery.Item do
   @derive {Jason.Encoder, only: @required_params ++ [:id]}
 
   schema "items" do
-    field :category, Enum, values: @items_categories
-    field :description, :string
-    field :price, :decimal
-    field :photo, :string
+    field(:category, Enum, values: @items_categories)
+    field(:description, :string)
+    field(:price, :decimal)
+    field(:photo, :string)
 
-    many_to_many :orders, Order, join_through: "orders_items"
+    many_to_many(:orders, Order, join_through: "orders_items")
 
     timestamps()
   end

@@ -7,7 +7,7 @@ defmodule Rockelivery.Orders.Report do
   @default_block_size 500
 
   def create(filename \\ "report.csv") do
-    query = from order in Order, order_by: order.user_id
+    query = from(order in Order, order_by: order.user_id)
 
     {:ok, order_list} =
       Repo.transaction(

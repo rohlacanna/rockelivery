@@ -4,31 +4,31 @@ defmodule RockeliveryWeb.Router do
   alias RockeliveryWeb.Plugs.UUIDChecker
 
   pipeline :api do
-    plug :accepts, ["json"]
-    plug UUIDChecker
+    plug(:accepts, ["json"])
+    plug(UUIDChecker)
   end
 
   pipeline :auth do
-    plug RockeliveryWeb.Auth.Pipeline
+    plug(RockeliveryWeb.Auth.Pipeline)
   end
 
   scope "/api", RockeliveryWeb do
-    pipe_through [:api, :auth]
+    pipe_through([:api, :auth])
 
-    resources "/users", UsersController, except: [:new, :edit, :create]
+    resources("/users", UsersController, except: [:new, :edit, :create])
 
-    post "/items", ItemsController, :create
+    post("/items", ItemsController, :create)
 
-    post "/orders", OrdersController, :create
+    post("/orders", OrdersController, :create)
   end
 
   scope "/api", RockeliveryWeb do
-    pipe_through :api
+    pipe_through(:api)
 
-    get "/", WelcomeController, :index
+    get("/", WelcomeController, :index)
 
-    post "/users/", UsersController, :create
-    post "/users/signin", UsersController, :sign_in
+    post("/users/", UsersController, :create)
+    post("/users/signin", UsersController, :sign_in)
   end
 
   # Enables LiveDashboard only for development
@@ -42,9 +42,9 @@ defmodule RockeliveryWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/" do
-      pipe_through [:fetch_session, :protect_from_forgery]
+      pipe_through([:fetch_session, :protect_from_forgery])
       # coveralls-ignore-start
-      live_dashboard "/dashboard", metrics: RockeliveryWeb.Telemetry
+      live_dashboard("/dashboard", metrics: RockeliveryWeb.Telemetry)
       # coveralls-ignore-stop
     end
   end

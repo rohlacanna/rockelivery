@@ -12,16 +12,16 @@ defmodule Rockelivery.User do
   @derive {Jason.Encoder, only: [:id, :age, :cpf, :address, :email]}
 
   schema "users" do
-    field :age, :integer
-    field :address, :string
-    field :cep, :string
-    field :cpf, :string
-    field :email, :string
-    field :password, :string, virtual: true
-    field :password_hash, :string
-    field :name, :string
+    field(:age, :integer)
+    field(:address, :string)
+    field(:cep, :string)
+    field(:cpf, :string)
+    field(:email, :string)
+    field(:password, :string, virtual: true)
+    field(:password_hash, :string)
+    field(:name, :string)
 
-    has_many :orders, Order
+    has_many(:orders, Order)
 
     timestamps()
   end

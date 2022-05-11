@@ -9,10 +9,10 @@
 		<img alt="Author" src="https://img.shields.io/badge/author-Romulo%20Silva-FEBE53?style=flat" />
 	</a>
 	<a href="#">
-		<img alt="Languages" src="https://img.shields.io/github/languages/count/rohlacnna/Rockelivery?color=FEBE53&style=flat" />
+		<img alt="Languages" src="https://img.shields.io/github/languages/count/rohlacanna/Rockelivery?color=FEBE53&style=flat" />
 	</a>
 	<a href="hhttps://github.com/rohlacanna/Rockelivery/stargazers">
-		<img alt="Stars" src="https://img.shields.io/github/stars/rohlacnna/Rockelivery?color=FEBE53&style=flat" />
+		<img alt="Stars" src="https://img.shields.io/github/stars/rohlacanna/Rockelivery?color=FEBE53&style=flat" />
 	</a>
 	<a href="https://github.com/rohlacanna/Rockelivery/network/members">
 		<img alt="Forks" src="https://img.shields.io/github/forks/rohlacanna/Rockelivery?color=FEBE53&style=flat" />

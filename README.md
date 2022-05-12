@@ -6,7 +6,7 @@
 
 <p align="center">
 	<a href="https://github.com/rohlacanna">
-		<img alt="Author" src="https://img.shields.io/badge/author-Romulo%20Silva-FEBE53?style=flat" />
+		<img alt="Author" src="https://img.shields.io/badge/author-Rômulo%20Silva-FEBE53?style=flat" />
 	</a>
 	<a href="#">
 		<img alt="Languages" src="https://img.shields.io/github/languages/count/rohlacanna/Rockelivery?color=FEBE53&style=flat" />
@@ -61,13 +61,13 @@
 
 SSH URLs provide access to a Git repository via SSH, a secure protocol. If you have an SSH key registered in your GitHub account, clone the project using this command:
 
-`git clone git@github.com:RomuloHe4rt/rockelivery.git`
+`git clone git@github.com:rohlacanna/rockelivery.git`
 
 ### HTTPS
 
 In case you don't have an SSH key on your GitHub account, you can clone the project using the HTTPS URL, run this command:
 
-`git clone https://github.com/RomuloHe4rt/rockelivery.git`
+`git clone https://github.com/rohlacanna/rockelivery.git`
 
 **Both of these commands will generate a folder called Rockelivery, with all the project**
 
@@ -93,7 +93,7 @@ In case you don't have an SSH key on your GitHub account, you can clone the proj
 
 # :bug: Issues
 
-Find a bug or error on the project? Please, feel free to send me the issue on the [Rockelivery issues area](https://github.com/RomuloHe4rt/Rockelivery/issues), with a title and a description of your found!
+Find a bug or error on the project? Please, feel free to send me the issue on the [Rockelivery issues area](https://github.com/rohlacanna/Rockelivery/issues), with a title and a description of your found!
 
 If you know the origin of the error and know how to resolve it, please, send me a pull request, I will love to review it!
 
@@ -101,7 +101,7 @@ If you know the origin of the error and know how to resolve it, please, send me 
 
 Released in 2022.
 
-This project is under the [MIT license](https://github.com/RomuloHe4rt/Rockelivery/blob/main/LICENSE).
+This project is under the [MIT license](https://github.com/rohlacanna/Rockelivery/blob/main/LICENSE).
 
 <p align="center">
 	< keep coding /> :rocket: :heart:
